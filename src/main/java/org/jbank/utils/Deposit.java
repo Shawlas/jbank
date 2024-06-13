@@ -1,20 +1,22 @@
 package org.jbank.utils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
-public class Deposit {
-    private final @NotNull Customer customer;
-    private boolean isAdd = true;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-    public Deposit(@NotNull Customer customer) {
-        this.customer = customer;
+public final class Deposit extends Movement {
+    private final @Range(from = 0, to = Long.MAX_VALUE) double depositValue;
+
+    public Deposit(@NotNull LocalDate date, @NotNull LocalTime time, @NotNull Customer customer, @Range(from = 0, to = Long.MAX_VALUE) double depositValue) {
+        super(date, time, customer);
+        this.depositValue = depositValue;
+        toDeposit();
     }
 
-    public @NotNull Customer getCustomer() {
-        return customer;
+    public void toDeposit() {
+        getCustomer().setBalance(getCustomer().getBalance() + this.depositValue);
     }
 
-    public boolean getIsAdd() {
-        return isAdd;
-    }
 }
