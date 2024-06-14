@@ -9,10 +9,9 @@ import java.time.LocalTime;
 public final class Deposit extends Movement {
     private final @Range(from = 0, to = Long.MAX_VALUE) double depositValue;
 
-    public Deposit(@NotNull LocalDate date, @NotNull LocalTime time, @NotNull Customer customer, @Range(from = 0, to = Long.MAX_VALUE) double depositValue) {
-        super(date, time, customer);
+    public Deposit(@NotNull Customer customer, @Range(from = 0, to = Long.MAX_VALUE) double depositValue) {
+        super(customer);
         this.depositValue = depositValue;
-        toDeposit();
     }
 
     public void toDeposit() {
