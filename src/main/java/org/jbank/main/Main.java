@@ -11,6 +11,21 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Customer customer = new Customer("test","testJR","1242512516","5555555","test@email");
+
+        System.out.println(customer.getBalance());
+
+        Movement deposit = new Deposit(1,customer, 2000);
+
+        System.out.println(customer.getBalance());
+
+        Movement withdraw = new Withdraw(3, customer, 1000);
+
+        System.out.println(customer.getBalance());
+
+        System.out.println(deposit.getDateTime());
+
+        System.out.println(deposit.getId() + " " + withdraw.getId());
 
     }
 }
