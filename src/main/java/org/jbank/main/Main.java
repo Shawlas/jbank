@@ -1,31 +1,24 @@
 package org.jbank.main;
-import org.jbank.utils.Customer;
+import org.jbank.entities.*;
 import org.jbank.utils.Deposit;
-import org.jbank.utils.Movement;
 import org.jbank.utils.Withdraw;
-import org.jetbrains.annotations.NotNull;
-
-import java.time.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        Customer customer = new Customer("test","testJR","1242512516","5555555","test@email");
+        Customer customer = new Customer("asd123", "henrique", "sousa", "123239", "henrique@gmail");
 
-        System.out.println(customer.getBalance());
+        TransactionAccount account = new TransactionAccount(customer, "a-bc154");
 
-        Movement deposit = new Deposit(1,customer, 2000);
+        Movement deposit = new Deposit(1, 300, account);
 
-        System.out.println(customer.getBalance());
+        System.out.println(account.getBalance() + ": " + deposit.getDateTime());
 
-        Movement withdraw = new Withdraw(3, customer, 1000);
+        Movement withdraw = new Withdraw(1, 150, account);
 
-        System.out.println(customer.getBalance());
-
-        System.out.println(deposit.getDateTime());
-
-        System.out.println(deposit.getId() + " " + withdraw.getId());
+        System.out.println(account.getBalance() + ": " + withdraw.getDateTime());
 
     }
+
 }

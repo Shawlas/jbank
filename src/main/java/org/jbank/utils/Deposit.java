@@ -1,19 +1,19 @@
 package org.jbank.utils;
 
+import org.jbank.entities.Movement;
+import org.jbank.entities.TransactionAccount;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+public class Deposit extends Movement {
 
-public final class Deposit extends Movement {
-
-    public Deposit(long id, @NotNull Customer customer, double amount) {
-        super(id, customer, amount);
-        executeOperation();
+    public Deposit(@Range(from = 0, to = Long.MAX_VALUE) int id, double amount, @NotNull TransactionAccount transactionAccount) throws Exception {
+        super(id, amount, transactionAccount);
+        deposit(transactionAccount, amount);
     }
 
-    private void executeOperation() {
-        getCustomer().setBalance(getCustomer().getBalance() + getAmount());
+    private void deposit(TransactionAccount transactionAccount, @Range(from = 0, to = Long.MAX_VALUE) double amount) throws Exception {
+        addBalance(transactionAccount, amount);
     }
+
 }
