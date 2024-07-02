@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public final class Customer implements Serializable {
+public final class Customer {
     private final @NotNull String id;
     private final @NotNull String name;
     private final @NotNull String surname;
