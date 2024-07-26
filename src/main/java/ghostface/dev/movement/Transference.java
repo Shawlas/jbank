@@ -6,11 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Transference extends Movement {
     private final @NotNull Account receiver;
-    private final double value;
 
     public Transference(int id, @NotNull Account from, double value, @NotNull Account to) {
-        super(id, from);
-        this.value = value;
+        super(id, from, value);
         receiver = to;
         operation(value);
     }
@@ -21,9 +19,6 @@ public final class Transference extends Movement {
         getFrom().setBalance(getFrom().getBalance() - value);
     }
 
-    @Override
-    public double getValue() {
-        return value;
-    }
+
 
 }

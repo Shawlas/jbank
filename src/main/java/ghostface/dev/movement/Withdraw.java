@@ -5,11 +5,9 @@ import ghostface.dev.core.Movement;
 import org.jetbrains.annotations.NotNull;
 
 public final class Withdraw extends Movement {
-    private final double value;
 
     public Withdraw(int id, @NotNull Account from, double value) {
-        super(id, from);
-        this.value = value;
+        super(id, from, value);
         operation(value);
     }
 
@@ -18,10 +16,6 @@ public final class Withdraw extends Movement {
         getFrom().setBalance(getFrom().getBalance() - value);
     }
 
-    @Override
-    public double getValue() {
-        return value;
-    }
 
 
 }
