@@ -1,22 +1,21 @@
 package ghostface.dev.movement;
 
-import ghostface.dev.account.Account;
-import ghostface.dev.exception.MovementException;
+import ghostface.dev.entities.Account;
+import ghostface.dev.exception.TransactionException;
 import org.jetbrains.annotations.NotNull;
 
-public final class Withdrawal extends Movement {
+public final class Withdrawal extends Transaction {
 
     public Withdrawal(@NotNull Account origin, double value) {
-        super(origin, value);
+        super(Type.WITHDRAWAL, origin, null, value);
     }
 
     @Override
-    public void execute() throws MovementException {
-        if (getOrigin().getHistory().contains(this)) {
-            throw new MovementException("Something is wrong with the operation");
+    public double calculate(@NotNull Account account) throws TransactionException {
+        if (account.equals(getOrigin())) {
+            return account.getBalance() - getValue();
         }
 
-        double value = getOrigin().getBalance().doubleValue();
-        getOrigin().getBalance().setValue(value - getValue());
+        throw new TransactionException("This account doesn't match any account in the transaction");
     }
 }

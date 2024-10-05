@@ -1,32 +1,23 @@
 package ghostface.dev.movement;
 
-import ghostface.dev.account.Account;
-import ghostface.dev.exception.MovementException;
+import ghostface.dev.entities.Account;
+import ghostface.dev.exception.TransactionException;
 import org.jetbrains.annotations.NotNull;
 
-public final class Transference extends Movement {
-
-    private final @NotNull Account destination;
+public final class Transference extends Transaction {
 
     public Transference(@NotNull Account origin, @NotNull Account destination, double value) {
-        super(origin, value);
-        this.destination = destination;
+        super(Type.TRANSFERENCE, origin, destination, value);
     }
 
     @Override
-    public void execute() throws MovementException {
-        if (getOrigin().getHistory().contains(this) || destination.getHistory().contains(this)) {
-            throw new MovementException("Origin or Destination Account already has this transaction");
+    public double calculate(@NotNull Account account) throws TransactionException {
+        if (account.equals(getOrigin())) {
+            return account.getBalance() - getValue();
+        } else if (account.equals(getDestination())) {
+            return account.getBalance() + getValue();
         }
 
-        double valueOrigin = getOrigin().getBalance().doubleValue();
-        double valueDestination = getDestination().getBalance().doubleValue();
-
-        getOrigin().getBalance().setValue(valueOrigin + getValue());
-        getDestination().getBalance().setValue(valueDestination + getValue());
-    }
-
-    public @NotNull Account getDestination() {
-        return destination;
+        throw new TransactionException("This account doesn't match any account in the transaction");
     }
 }
