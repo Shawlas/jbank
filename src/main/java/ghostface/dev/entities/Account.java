@@ -1,19 +1,23 @@
 package ghostface.dev.entities;
 
 import ghostface.dev.exception.TransactionException;
+import ghostface.dev.movement.Deposit;
 import ghostface.dev.movement.Transaction;
+import ghostface.dev.movement.Transference;
+import ghostface.dev.movement.Withdrawal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Account {
+public abstract class Account {
 
-    private final long id;
+    @Range(from = 0, to = Long.MAX_VALUE) private final long id;
+    @Range(from = 0, to = Long.MAX_VALUE) private double balance;
     private final @NotNull Customer customer;
     private final @NotNull Stack<@NotNull Transaction> history = new Stack<>();
-    private double balance;
 
     public Account(@NotNull Customer customer) {
         this.customer = customer;
@@ -21,13 +25,19 @@ public class Account {
         this.id = AccountGenerateID.getId();
     }
 
+    public abstract @NotNull Withdrawal withdraw(@Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+
+    public abstract @NotNull Deposit deposit(@Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+
+    public abstract @NotNull Transference transfer(@NotNull Account account, @Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+
     // Getters
 
-    public final long getId() {
+    public final @Range(from = 0, to = Long.MAX_VALUE) long getId() {
         return id;
     }
 
-    public double getBalance() {
+    public @Range(from = 0, to = Long.MAX_VALUE) double getBalance() {
         return balance;
     }
 
@@ -67,9 +77,9 @@ public class Account {
 
     private static final class AccountGenerateID {
 
-        private static final AtomicLong id = new AtomicLong(0);
+        private static final @NotNull AtomicLong id = new AtomicLong(0);
 
-        public static long getId() {
+        public static @Range(from = 0, to = Long.MAX_VALUE) long getId() {
             return id.incrementAndGet();
         }
     }
