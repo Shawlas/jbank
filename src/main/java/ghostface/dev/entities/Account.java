@@ -25,11 +25,11 @@ public abstract class Account {
         this.id = AccountGenerateID.getId();
     }
 
-    public abstract @NotNull Withdrawal withdraw(@Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+    public abstract @NotNull Withdrawal withdraw(@Range(from = 0, to = Long.MAX_VALUE) double amount) throws TransactionException;
 
-    public abstract @NotNull Deposit deposit(@Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+    public abstract @NotNull Deposit deposit(@Range(from = 0, to = Long.MAX_VALUE) double amount) throws TransactionException;
 
-    public abstract @NotNull Transference transfer(@NotNull Account account, @Range(from = 0, to = Long.MAX_VALUE) double value) throws TransactionException;
+    public abstract @NotNull Transference transfer(@NotNull Account account, @Range(from = 0, to = Long.MAX_VALUE) double amount) throws TransactionException;
 
     // Getters
 

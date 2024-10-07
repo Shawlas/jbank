@@ -1,7 +1,6 @@
 package ghostface.dev.impl;
 
 import ghostface.dev.entities.Account;
-import ghostface.dev.entities.SavingsAccount;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,12 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Accounts implements Iterable<@NotNull Account> {
-    // Todo: replace Account to Checking Account
 
     private final @NotNull List<@NotNull Account> array = new ArrayList<>();
 
+    // Todo: replace Account to Checking Account
     public boolean add(@NotNull Account account) {
         if (hasChecking()) return false;
+        if (array.size() == 2) return false;
 
         synchronized (this) {
             array.add(account);
@@ -25,6 +25,7 @@ public class Accounts implements Iterable<@NotNull Account> {
 
     public boolean add(@NotNull SavingsAccount account) {
         if (hasSavings()) return false;
+        if (array.size() == 2) return false;
 
         synchronized (this) {
             array.add(account);
@@ -53,23 +54,11 @@ public class Accounts implements Iterable<@NotNull Account> {
         return array.iterator();
     }
 
-    public @Nullable Account getAccount() {
-        while (iterator().hasNext()) {
-            @NotNull Account account = iterator().next();
-            if (account.getClass().getName().equals(Account.class.getName())) {
-                return account;
-            }
-        }
-        return null;
+    public @Nullable CheckingAccount getAccount() {
+        return (CheckingAccount) array.stream().filter(account -> account instanceof CheckingAccount).findFirst().orElse(null);
     }
 
     public @Nullable SavingsAccount getSavingsAccount() {
-        while (iterator().hasNext()) {
-            @NotNull Account account = iterator().next();
-            if (account.getClass().getName().equals(SavingsAccount.class.getName())) {
-                return (SavingsAccount) account;
-            }
-        }
-        return null;
+        return (SavingsAccount) array.stream().filter(account -> account instanceof SavingsAccount).findFirst().orElse(null);
     }
 }
