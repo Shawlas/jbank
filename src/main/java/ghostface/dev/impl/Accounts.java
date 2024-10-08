@@ -12,8 +12,7 @@ public class Accounts implements Iterable<@NotNull Account> {
 
     private final @NotNull List<@NotNull Account> array = new ArrayList<>();
 
-    // Todo: replace Account to Checking Account
-    public boolean add(@NotNull Account account) {
+    public boolean add(@NotNull CheckingAccount account) {
         if (hasChecking()) return false;
         if (array.size() == 2) return false;
 
@@ -33,7 +32,7 @@ public class Accounts implements Iterable<@NotNull Account> {
         }
     }
 
-    public boolean remove(@NotNull Account account) {
+    public boolean remove(@NotNull CheckingAccount account) {
         return array.remove(account);
     }
 
@@ -46,7 +45,7 @@ public class Accounts implements Iterable<@NotNull Account> {
     }
 
     public boolean hasChecking() {
-        return array.stream().anyMatch(account -> account.getClass().getName().equals(Account.class.getName()));
+        return array.stream().anyMatch(account -> account.getClass().getName().equals(CheckingAccount.class.getName()));
     }
 
     @Override
