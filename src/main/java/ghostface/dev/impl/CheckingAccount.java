@@ -11,8 +11,6 @@ import org.jetbrains.annotations.Range;
 
 public final class CheckingAccount extends Account {
 
-    private final @NotNull Object lock = new Object();
-
     public CheckingAccount(@NotNull Customer customer) {
         super(customer);
     }
@@ -23,7 +21,7 @@ public final class CheckingAccount extends Account {
             throw new TransactionException("The amount is zero or less than customer balance");
         } else synchronized (lock) {
             @NotNull Withdrawal withdrawal = new Withdrawal(this, amount);
-            setBalance(withdrawal);
+            this.setBalance(withdrawal);
             return withdrawal;
         }
     }
@@ -34,7 +32,7 @@ public final class CheckingAccount extends Account {
             throw new TransactionException("The amount is zero or less than customer balance");
         } else synchronized (lock) {
             @NotNull Deposit deposit = new Deposit(this, amount);
-            setBalance(deposit);
+            this.setBalance(deposit);
             return deposit;
         }
     }
@@ -45,7 +43,7 @@ public final class CheckingAccount extends Account {
             throw new TransactionException("The amount is zero or less than customer balance");
         } else synchronized (lock) {
             @NotNull Transference transference = new Transference(this, account, amount);
-            setBalance(transference);
+            this.setBalance(transference);
             account.setBalance(transference);
             return transference;
         }
