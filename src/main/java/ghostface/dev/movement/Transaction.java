@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class Transaction {
@@ -16,15 +17,13 @@ public abstract class Transaction {
     private final @Nullable Account origin;
     private final @Nullable Account destination;
     private final @NotNull OffsetDateTime time;
-    @Range(from = 0, to = Long.MAX_VALUE)
-    private final double value;
+    @Range(from = 0, to = Long.MAX_VALUE) private final double value;
 
     protected Transaction(
             @NotNull Type type,
             @Nullable Account origin,
             @Nullable Account destination,
-            @Range(from = 0, to = Long.MAX_VALUE)
-            double value
+            @Range(from = 0, to = Long.MAX_VALUE) double value
     ) {
         this.id = MovementGenereteID.getId();
         this.type = type;
@@ -60,6 +59,21 @@ public abstract class Transaction {
 
     public @NotNull Type getType() {
         return type;
+    }
+
+    // Implementations
+
+    @Override
+    public boolean equals(@Nullable Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        @NotNull Transaction that = (Transaction) object;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     // Classes

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Deposit extends Transaction {
 
-    public Deposit(@NotNull Type type, @NotNull Account destination, double value) {
+    public Deposit(@NotNull Account destination, double value) {
         super(Type.DEPOSIT, null, destination, value);
     }
 
