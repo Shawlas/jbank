@@ -1,6 +1,9 @@
 package ghostface.dev.registry;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 
 public final class CPF implements CharSequence {
@@ -78,6 +81,19 @@ public final class CPF implements CharSequence {
     @Override
     public @NotNull String toString() {
         return string;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        @NotNull CPF cpf = (CPF) object;
+        return Objects.equals(string, cpf.string);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(string);
     }
 
     // Charsequence Implementations

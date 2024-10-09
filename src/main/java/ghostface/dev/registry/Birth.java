@@ -1,26 +1,38 @@
 package ghostface.dev.registry;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.time.*;
+import java.util.Objects;
 
 public final class Birth {
 
-    public static boolean isAdult(int day, @NotNull Month month, @NotNull Year year) {
-        @NotNull LocalDate birth =  MonthDay.of(month, day).atYear(Year.now().getValue());
+    public static boolean isAdult(int day, @NotNull Month month, int year) {
+        if (year > Year.now().getValue())
+            return false;
+
+        @NotNull LocalDate birth = LocalDate.of(year, month, day);
         @NotNull LocalDate now = LocalDate.now();
-        return birth.isEqual(now) || birth.isAfter(now);
+
+        int age = now.getYear() - birth.getYear();
+
+        if (now.isBefore(birth.withYear(now.getYear()))) {
+            age --;
+        }
+
+        return age >= 18;
     }
 
-    public static boolean isValid(int day, @NotNull Month month, @NotNull Year year) {
-        if (year.getValue() > Year.now().getValue()) {
+    public static boolean isValid(int day, @NotNull Month month, int year) {
+        if (year > Year.now().getValue()) {
             return false;
         } else if (day < 1 || day > 31) {
             return false;
         } else try {
-            @NotNull YearMonth ym = YearMonth.of(year.getValue(), month);
-            return day <= ym.lengthOfMonth();
+            @NotNull LocalDate date = LocalDate.of(year, month, day);
+            return true;
         } catch (DateTimeException e) {
             return false;
         }
@@ -33,9 +45,9 @@ public final class Birth {
     private final @NotNull Year year;
 
     public Birth(@Range(from = 1, to = 31) int day, @NotNull Month month, @NotNull Year year) {
-        if (!isValid(day, month, year)) {
+        if (!isValid(day, month, year.getValue())) {
             throw new IllegalArgumentException("This is not a valid birth date");
-        } else if (!isAdult(day, month, year)) { // Check the age
+        } else if (!isAdult(day, month, year.getValue())) {
             throw new IllegalArgumentException("Customer must to be over 18");
         }
 
@@ -66,10 +78,28 @@ public final class Birth {
         return YearMonth.of(year.getValue(), month);
     }
 
+    public @NotNull LocalDate getLocalDate() {
+        return LocalDate.of(year.getValue(), month, day);
+    }
+
     public int getAge() {
-        @NotNull MonthDay now = MonthDay.now();
-        @NotNull MonthDay birth = MonthDay.of(month, day);
-        int age = Year.now().getValue() - year.getValue();
-        return now.isBefore(birth) ? age - 1 : age;
+        @NotNull LocalDate now = LocalDate.now();
+
+        int age = now.getYear() - year.getValue();
+
+        return now.isBefore(getLocalDate()) ? age - 1 : age;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        @NotNull Birth birth = (Birth) object;
+        return day == birth.day && month == birth.month && Objects.equals(year, birth.year);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(day, month, year);
     }
 }

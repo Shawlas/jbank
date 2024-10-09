@@ -1,18 +1,27 @@
 package ghostface.dev.registry;
 
-
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class PhoneNumber {
+import java.util.Objects;
 
+
+public final class BrazilianNumber {
+
+    private final @NotNull String string;
     private final @NotNull DDD ddd;
     private final int number;
 
-    public PhoneNumber(@NotNull DDD dd, int number) {
-        @NotNull String string = String.valueOf(number);
-        if (string.length() != 9 || Integer.parseInt(String.valueOf(string.charAt(0))) != 9) throw new IllegalArgumentException("Invalid Phone Number: " + number);
-        this.ddd = dd;
+    public BrazilianNumber(@NotNull DDD ddd, int number) {
+        @NotNull String phone = String.valueOf(number);
+
+        if (phone.length() != 9 || Character.getNumericValue(phone.charAt(0)) != 9) {
+            throw new IllegalArgumentException("The number '" + number + "' is not valid phone number");
+        }
+
+        this.ddd = ddd;
         this.number = number;
+        this.string = format(ddd, number);
     }
 
     public int getNumber() {
@@ -20,11 +29,46 @@ public final class PhoneNumber {
     }
 
     public long getCompleteNumber() {
-        return Long.parseLong(String.valueOf(ddd.code) + number);
+        return Long.parseLong(String.valueOf(ddd.getCode()) + number);
     }
 
     public @NotNull DDD getDdd() {
         return ddd;
+    }
+
+    @Override
+    public String toString() {
+        return string;
+    }
+
+    private @NotNull String format(@NotNull DDD ddd, int number) {
+        @NotNull StringBuilder builder = new StringBuilder();
+        @NotNull String string = String.valueOf(number);
+
+        for (int i = 0; i < 5; i++) {
+            builder.append(string.charAt(i));
+        }
+        builder.append("-");
+        for (int i = 5; i < 9; i++) {
+            builder.append(string.charAt(i));
+        }
+
+        return "(" + ddd.getCode() + ") " + builder;
+    }
+
+    // Implementations
+
+    @Override
+    public boolean equals(@Nullable Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        @NotNull BrazilianNumber that = (BrazilianNumber) object;
+        return Objects.equals(string, that.string);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(string);
     }
 
     public enum DDD {
