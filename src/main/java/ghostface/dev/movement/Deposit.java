@@ -6,13 +6,13 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Deposit extends Transaction {
 
-    public Deposit(@NotNull Account destination, double value) {
-        super(Type.DEPOSIT, null, destination, value);
+    public Deposit(@NotNull Account origin, double value) {
+        super(Type.DEPOSIT, origin, null, value);
     }
 
     @Override
-    public double calculate(@NotNull Account account) throws TransactionException {
-        if (account.equals(getDestination())) {
+    public double compute(@NotNull Account account) throws TransactionException {
+        if (account.equals(getOrigin())) {
             return account.getBalance() + getValue();
         }
 

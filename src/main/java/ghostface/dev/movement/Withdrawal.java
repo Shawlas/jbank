@@ -11,7 +11,7 @@ public final class Withdrawal extends Transaction {
     }
 
     @Override
-    public double calculate(@NotNull Account account) throws TransactionException {
+    public double compute(@NotNull Account account) throws TransactionException {
         if (account.equals(getOrigin())) {
             return account.getBalance() - getValue();
         }

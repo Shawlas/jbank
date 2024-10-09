@@ -6,15 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 public final class Transference extends Transaction {
 
-    public Transference(@NotNull Account origin, @NotNull Account destination, double value) {
-        super(Type.TRANSFERENCE, origin, destination, value);
+    public Transference(@NotNull Account origin, @NotNull Account target, double value) {
+        super(Type.TRANSFERENCE, origin, target, value);
     }
 
     @Override
-    public double calculate(@NotNull Account account) throws TransactionException {
+    public double compute(@NotNull Account account) throws TransactionException {
         if (account.equals(getOrigin())) {
             return account.getBalance() - getValue();
-        } else if (account.equals(getDestination())) {
+        } else if (account.equals(getTarget())) {
             return account.getBalance() + getValue();
         }
 

@@ -12,6 +12,8 @@ import org.jetbrains.annotations.Range;
 
 public final class SavingsAccount extends Account {
 
+    private final @NotNull Object lock = new Object();
+
     public SavingsAccount(@NotNull Customer customer) {
         super(customer);
     }

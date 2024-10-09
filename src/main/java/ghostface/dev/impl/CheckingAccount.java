@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Range;
 
 public final class CheckingAccount extends Account {
 
+    private final @NotNull Object lock = new Object();
+
     public CheckingAccount(@NotNull Customer customer) {
         super(customer);
     }
@@ -48,5 +50,4 @@ public final class CheckingAccount extends Account {
             return transference;
         }
     }
-
 }

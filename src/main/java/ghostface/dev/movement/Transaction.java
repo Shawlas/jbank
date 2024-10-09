@@ -14,26 +14,26 @@ public abstract class Transaction {
 
     private final long id;
     private final @NotNull Type type;
-    private final @Nullable Account origin;
-    private final @Nullable Account destination;
+    private final @NotNull Account origin;
+    private final @Nullable Account target;
     private final @NotNull OffsetDateTime time;
     @Range(from = 0, to = Long.MAX_VALUE) private final double value;
 
     protected Transaction(
             @NotNull Type type,
-            @Nullable Account origin,
-            @Nullable Account destination,
+            @NotNull Account origin,
+            @Nullable Account target,
             @Range(from = 0, to = Long.MAX_VALUE) double value
     ) {
         this.id = MovementGenereteID.getId();
         this.type = type;
         this.origin = origin;
-        this.destination = destination;
+        this.target = target;
         this.value = value;
         this.time = OffsetDateTime.now();
     }
 
-    public abstract double calculate(@NotNull Account account) throws TransactionException;
+    public abstract double compute(@NotNull Account account) throws TransactionException;
 
     // Getters
 
@@ -41,7 +41,7 @@ public abstract class Transaction {
         return value;
     }
 
-    public @Nullable Account getOrigin() {
+    public @NotNull Account getOrigin() {
         return origin;
     }
 
@@ -49,8 +49,8 @@ public abstract class Transaction {
         return time;
     }
 
-    public @Nullable Account getDestination() {
-        return destination;
+    public @Nullable Account getTarget() {
+        return target;
     }
 
     public final long getId() {

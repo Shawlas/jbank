@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public abstract class Account {
 
-    protected final @NotNull Object lock = new Object();
+    private final @NotNull Object lock = new Object();
 
     @Range(from = 0, to = Long.MAX_VALUE) private final long id;
     @Range(from = 0, to = Long.MAX_VALUE) private volatile double balance;
@@ -65,7 +65,7 @@ public abstract class Account {
         if (history.contains(transaction)) {
             throw new TransactionException("This account already has this transaction");
         } else synchronized (lock) {
-            this.balance = transaction.calculate(this);
+            this.balance = transaction.compute(this);
             this.history.push(transaction);
         }
     }
