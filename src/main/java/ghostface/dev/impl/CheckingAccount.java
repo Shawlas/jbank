@@ -30,7 +30,7 @@ public final class CheckingAccount extends Account {
 
     @Override
     public @NotNull Deposit deposit(@Range(from = 0, to = Long.MAX_VALUE) double amount) throws TransactionException {
-        if (amount <= 0 || amount > getBalance()) {
+        if (amount <= 0) {
             throw new TransactionException("The amount is zero or less than customer balance");
         } else synchronized (lock) {
             @NotNull Deposit deposit = new Deposit(this, amount);

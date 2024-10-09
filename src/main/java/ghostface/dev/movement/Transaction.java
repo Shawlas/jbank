@@ -14,8 +14,10 @@ public abstract class Transaction {
 
     private final long id;
     private final @NotNull Type type;
+
     private final @NotNull Account origin;
     private final @Nullable Account target;
+
     private final @NotNull OffsetDateTime time;
     @Range(from = 0, to = Long.MAX_VALUE) private final double value;
 
