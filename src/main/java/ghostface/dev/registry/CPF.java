@@ -9,17 +9,23 @@ import java.util.Objects;
 public final class CPF implements CharSequence {
 
     public static @NotNull String format(@NotNull String s) {
+        @NotNull String cpf = s.replace(".", "").replace("-", "");
+
+        if (cpf.length() != 11 || !cpf.matches("^[0-9]{11}$")) {
+            throw new IllegalArgumentException("invalid CPF String");
+        }
+
         @NotNull StringBuilder builder = new StringBuilder();
 
-        builder.append(s.charAt(0)).append(s.charAt(1)).append(s.charAt(2)).append(".");
-        builder.append(s.charAt(3)).append(s.charAt(4)).append(s.charAt(5)).append(".");
-        builder.append(s.charAt(6)).append(s.charAt(7)).append(s.charAt(8)).append("-");
-        builder.append(s.charAt(9)).append(s.charAt(10));
+        builder.append(cpf, 0, 3).append(".")
+                .append(cpf, 3, 6).append(".")
+                .append(cpf, 6, 9).append("-")
+                .append(cpf,9, 11);
 
         return builder.toString();
     }
 
-    public static boolean isValid(@NotNull String string) {
+    public static boolean validate(@NotNull String string) {
         @NotNull String cpf = string.replace(".", "").replace("-", "");
 
         if (!cpf.matches("^[0-9]{11}$")) {
@@ -70,7 +76,7 @@ public final class CPF implements CharSequence {
     private final @NotNull String string;
 
     public CPF(@NotNull String string) {
-        if (!isValid(string)) throw new IllegalArgumentException("The string '" + string + "' is not valid CPF");
+        if (!validate(string)) throw new IllegalArgumentException("The string '" + string + "' is not valid CPF");
         this.string = string.replace(".","").replace("-", "");
     }
 
