@@ -9,13 +9,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public abstract class Account {
 
+    protected final @NotNull Object lock = new Object();
+
     @Range(from = 0, to = Long.MAX_VALUE) private final long id;
-    @Range(from = 0, to = Long.MAX_VALUE) private double balance;
+    @Range(from = 0, to = Long.MAX_VALUE) private volatile double balance;
     private final @NotNull Customer customer;
     private final @NotNull Stack<@NotNull Transaction> history = new Stack<>();
 
@@ -45,14 +49,22 @@ public abstract class Account {
         return customer;
     }
 
-    public @NotNull List<@NotNull Transaction> getHistory() {
-        return history.reversed();
+    public @NotNull Collection<@NotNull Transaction> getHistory() {
+        return new HashSet<>(history.reversed());
+    }
+
+    public @NotNull Collection<@NotNull Transaction> getTransactionsThisMounth() {
+        @NotNull YearMonth now = YearMonth.now();
+        return getHistory()
+                .stream()
+                .filter(transaction -> transaction.getTime().getYear() == now.getYear() && transaction.getTime().getMonthValue() == now.getMonthValue())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public void setBalance(@NotNull Transaction transaction) throws TransactionException {
         if (history.contains(transaction)) {
             throw new TransactionException("This account already has this transaction");
-        } else synchronized (this) {
+        } else synchronized (lock) {
             this.balance = transaction.calculate(this);
             this.history.push(transaction);
         }

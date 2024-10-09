@@ -5,116 +5,82 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CPF implements CharSequence {
 
-    public static boolean isValid(long cpf) {
-        return calculate(cpf);
+    public static @NotNull String format(@NotNull String s) {
+        @NotNull StringBuilder builder = new StringBuilder();
+
+        builder.append(s.charAt(0)).append(s.charAt(1)).append(s.charAt(2)).append(".");
+        builder.append(s.charAt(3)).append(s.charAt(4)).append(s.charAt(5)).append(".");
+        builder.append(s.charAt(6)).append(s.charAt(7)).append(s.charAt(8)).append("-");
+        builder.append(s.charAt(9)).append(s.charAt(10));
+
+        return builder.toString();
     }
 
-    // TODO: waiting for Clean Code to arrive
     public static boolean isValid(@NotNull String string) {
-        if (string.length() == 14) {
-            if (string.split("\\.").length != 3) {
-                return false;
-            }
+        @NotNull String cpf = string.replace(".", "").replace("-", "");
 
-            @NotNull String[] allparts = string.split("\\.");
-            @NotNull String[] firtPart = new String[2];
-            @NotNull String[] lastPart = allparts[2].split("-");
-
-            firtPart[0] = allparts[0];
-            firtPart[1] = allparts[1];
-
-            if (firtPart[0].length() != 3 || firtPart[0].isBlank()) {
-                return false;
-            } else if (firtPart[1].length() != 3 || firtPart[1].isBlank()) {
-                return false;
-            }
-
-            if (lastPart[0].length() != 3 || lastPart[0].isBlank()) {
-                return false;
-            } else if (lastPart[1].length() != 2 || lastPart[1].isBlank()) {
-                return false;
-            }
-
-            try {
-                long cpf = Long.parseLong(firtPart[0].concat(firtPart[1]).concat(lastPart[0]).concat(lastPart[1]));
-                return calculate(cpf);
-            } catch (NumberFormatException e) {
-                return false;
-            }
-
-        } else if (string.length() == 11) {
-            try {
-                long cpf = Long.parseLong(string);
-                return calculate(cpf);
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        } else {
+        if (!cpf.matches("^[0-9]{11}$")) {
             return false;
         }
+
+        return computeIndex10(cpf) && computeIndex11(cpf);
     }
 
-    // Todo: this is not so bad, i guess
-    private static boolean calculate(long cpf) {
-        @NotNull String s = String.valueOf(cpf);
-        if (s.length() != 11) return false;
+    private static boolean computeIndex10(@NotNull String cpf) {
+        if (cpf.length() != 11) return false;
 
-        // Check the first part (penultimate cpf index)
+        int position = Character.getNumericValue(cpf.charAt(9));
         int multiplier = 10;
-        int result = 0;
+        int sum = 0;
 
         for (int i = 0; i < 9; i++) {
-            int n = Integer.parseInt(Character.toString(s.charAt(i))) * multiplier;
-            result = result + n;
+            int digit = Character.getNumericValue(cpf.charAt(i)) * multiplier;
+            sum += digit;
             multiplier--;
         }
 
-        int number = Integer.parseInt(Character.toString(s.charAt(9)));
+        int result = (sum * 10) % 11;
 
-        if ((result * 10) % 11 == 10) {
-            if (number != 0) return false;
-        } else if ((result * 10) % 11 != number) {
-            return false;
-        }
+        return result == 10 ? 0 == position : result == position;
+    }
 
-        // Check the part 2 (last cpf index)
-        multiplier = 11;
-        result = 0;
+    private static boolean computeIndex11(@NotNull String cpf) {
+        if (cpf.length() != 11) return false;
+
+        int position = Character.getNumericValue(cpf.charAt(10));
+        int multiplier = 11;
+        int sum = 0;
 
         for (int i = 0; i < 10; i++) {
-            int n = Integer.parseInt(Character.toString(s.charAt(i))) * multiplier;
-            result = result + n;
+            int n = Character.getNumericValue(cpf.charAt(i)) * multiplier;
             multiplier--;
+            sum += n;
         }
 
-        number = Integer.parseInt(Character.toString(s.charAt(10)));
+        int result = (sum * 10) % 11;
 
-        if ((result * 10) % 11 == 10 ) {
-            return number == 0;
-        } else
-            return (result * 10) % 11 == number;
+        return result == 10? 0 == position : result == position;
     }
 
     // Objects
 
     private final @NotNull String string;
 
-    // Todo: constructor with long
     public CPF(@NotNull String string) {
-        if (!isValid(string)) throw new IllegalArgumentException("Invalid CPF");
-        this.string = string;
+        if (!isValid(string)) throw new IllegalArgumentException("The string '" + string + "' is not valid CPF");
+        this.string = string.replace(".","").replace("-", "");
     }
 
-    public long getLong() {
-        return Long.getLong(string);
+    public @NotNull String getFormated() {
+        return format(string);
     }
-
-    // Charsequence Implementations
 
     @Override
     public @NotNull String toString() {
-        return string.replace(".", "").replace("-", "");
+        return string;
     }
+
+    // Charsequence Implementations
 
     @Override
     public int length() {
