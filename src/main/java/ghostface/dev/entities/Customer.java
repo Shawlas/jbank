@@ -12,7 +12,7 @@ public interface Customer {
 
     @NotNull Email getEmail();
 
-    @NotNull PhoneNumber getNumber();
+    @NotNull BrazilianNumber getNumber();
 
     @NotNull Birth getBirth();
 
